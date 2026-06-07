@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harmoniq - Music Library</title>
+    <!-- Google Fonts for Notebook & Modern UI Styles -->
+    <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- TOP NAVIGATION -->
+    <nav class="top-nav">
+        <div class="logo">
+            <h1>🎵 Harmoniq</h1>
+        </div>
+        <div class="nav-controls">
+            <input type="text" id="searchInput" placeholder="Search by Band Name...">
+            <button id="addBandBtn" class="btn primary-btn">+ Add Band</button>
+            <button id="viewLogsBtn" class="btn secondary-btn">View Logs</button>
+            <button id="rockViewBtn" class="btn view-btn">Rock View</button>
+            <button id="metalViewBtn" class="btn view-btn">Metal View</button>
+            <button id="allViewBtn" class="btn view-btn">Clear Filter</button>
+        </div>
+    </nav>
+
+    <div class="dashboard">
+        <!-- LEFT PANEL (Notebook style) -->
+        <aside class="left-panel notebook-paper">
+            <h2>Dashboard</h2>
+            <p class="description">Welcome to Harmoniq, your premium music library management system.</p>
+            
+            <div class="stats">
+                <div class="stat-box">
+                    <span class="stat-label">Total Bands:</span>
+                    <span id="totalBandsCount" class="stat-value">0</span>
+                </div>
+            </div>
+            
+            <div class="recent-adds">
+                <h3>DBMS Demo Features:</h3>
+                <ul>
+                    <li>✔ <b>SELECT:</b> Dynamic band viewing</li>
+                    <li>✔ <b>INSERT:</b> Add new bands</li>
+                    <li>✔ <b>UPDATE:</b> Edit band details</li>
+                    <li>✔ <b>DELETE:</b> Remove bands & triggers</li>
+                    <li>✔ <b>VIEWS:</b> Filter through SQL Views</li>
+                    <li>✔ <b>TRIGGERS:</b> Audit logging on delete</li>
+                </ul>
+            </div>
+            
+            <div class="notebook-holes"></div>
+        </aside>
+
+        <!-- RIGHT PANEL (Card Grid) -->
+        <main class="right-panel">
+            <div id="bandsGrid" class="bands-grid">
+                <!-- Cards will be injected here via JS -->
+            </div>
+        </main>
+    </div>
+
+    <!-- ADD/EDIT BAND MODAL -->
+    <div id="bandModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="modalTitle">Add New Band</h2>
+            <form id="bandForm">
+                <input type="hidden" id="bandId">
+                <div class="form-group">
+                    <label for="bandName">Band Name</label>
+                    <input type="text" id="bandName" required>
+                </div>
+                <div class="form-group">
+                    <label for="bandGenre">Genre</label>
+                    <select id="bandGenre" required>
+                        <option value="Rock">Rock</option>
+                        <option value="Electronic">Electronic</option>
+                        <option value="Metal">Metal</option>
+                        <option value="Hip-hop">Hip-hop</option>
+                    </select>
+                </div>
+                
+                <!-- Album Section (only visible for Add Band initially for simplicity) -->
+                <div id="albumSection">
+                    <h3>Albums</h3>
+                    <div id="albumsList">
+                        <!-- Initial Album block -->
+                        <div class="album-entry p-2 border-bottom">
+                            <input type="text" placeholder="Album Title" class="album-title">
+                            <input type="date" class="album-date">
+                        </div>
+                    </div>
+                    <button type="button" id="addAlbumFieldBtn" class="btn small-btn">+ Add Album</button>
+                    <small>Optional: leave blank to skip</small>
+                </div>
+
+                <button type="submit" class="btn submit-btn">Save Band</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- LOGS MODAL -->
+    <div id="logsModal" class="modal">
+        <div class="modal-content logs-content">
+            <span class="close-logs-modal">&times;</span>
+            <h2>Activity Logs</h2>
+            <p>Delete triggers caught by SQL Trigger:</p>
+            <table class="logs-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Band Name</th>
+                        <th>Timestamp (UTC)</th>
+                    </tr>
+                </thead>
+                <tbody id="logsTableBody">
+                    <!-- Logs injected here via JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
