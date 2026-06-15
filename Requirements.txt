@@ -1,0 +1,60 @@
+Listed directory Harmoniq-Music_Library_Management_API
+Viewed main.py:1-259
+Listed directory frontend
+Viewed db.py:1-181
+Listed directory Harmoniq-Music_Library_Management_API
+Viewed README.md:1-439
+Ran command: `ls .venv/bin/uvicorn || ls venv/bin/uvicorn`
+
+To run the **Harmoniq** application locally, follow these steps. Since the frontend is integrated into the backend (served as static files), starting the backend server will launch the entire application.
+
+### 1. Prerequisite: PostgreSQL Setup
+Ensure you have **PostgreSQL** running and configured with the following credentials (as defined in `db.py`):
+- **Database Name:** `harmoniq`
+- **User:** `harmoniq_user`
+- **Password:** `harmoniq123`
+
+You can set this up quickly in your terminal:
+```bash
+psql -U postgres -c "CREATE DATABASE harmoniq;"
+psql -U postgres -c "CREATE USER harmoniq_user WITH PASSWORD 'harmoniq123';"
+psql -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE harmoniq TO harmoniq_user;"
+psql -U postgres -d harmoniq -c "GRANT ALL ON SCHEMA public TO harmoniq_user;"
+```
+
+### 2. Activate Virtual Environment
+Navigate to the project root and activate the existing virtual environment:
+```bash
+cd Harmoniq-Music_Library_Management_API
+source venv/bin/activate
+```
+
+### 3. Install Dependencies (If not already installed)
+If you haven't installed the requirements yet:
+```bash
+pip install fastapi sqlmodel uvicorn alembic psycopg2-binary
+```
+
+### 4. Run the Backend & Frontend
+Start the FastAPI server using `uvicorn`:
+```bash
+uvicorn main:app --reload
+```
+
+### 5. Access the Application
+Once the server is running, open your browser to:
+- **Frontend UI:** [http://localhost:8000](http://localhost:8000)
+- **Interactive API Docs (Swagger):** [http://localhost:8000/docs](http://localhost:8000/docs)
+
+**What happens on first run?**
+The application will automatically:
+1. Initialize the database schema (tables, views, and triggers).
+2. Seed initial data (bands like The Kinks, Aphex Twin, Black Sabbath).
+3. Serve the frontend files from the `/frontend` directory.
+
+### Summary of Commands
+| Component | Command |
+| :--- | :--- |
+| **Backend** | `uvicorn main:app --reload` |
+| **Frontend** | Automatically served at `http://localhost:8000` |
+| **Database** | Shared via `db.py` (PostgreSQL) |
