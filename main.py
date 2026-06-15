@@ -1,10 +1,11 @@
 from typing import Optional, Annotated
 from fastapi import FastAPI, HTTPException, Depends, Query
 from fastapi.staticfiles import StaticFiles
-from models import GenreURLChoices, Band, BandCreate, BandUpdate, Album, AuditLog
+from models import GenreURLChoices, Band, BandCreate, BandUpdate, Album, AuditLog, BandRead
 from db import init_db, get_session
 from contextlib import asynccontextmanager
 from sqlmodel import Session, select, text
+from sqlalchemy.orm import selectinload
 
 
 @asynccontextmanager
@@ -19,24 +20,24 @@ app = FastAPI(lifespan=lifespan)
 # BASIC CRUD ENDPOINTS
 # =============================================
 
-@app.get('/bands')
-async def bands(genre: Optional[GenreURLChoices] = None, 
+@app.get('/bands', response_model=list[BandRead])
+async def bands(genre: Optional[GenreURLChoices] = None,
                 q: Annotated[Optional[str], Query(max_length=10)] = None,
                 has_albums: bool = False, session: Session = Depends(get_session)
-                ) -> list[Band]:
-    band_list = session.exec(select(Band)).all()   
+                ):
+    band_list = session.exec(select(Band).options(selectinload(Band.albums))).all()
     if genre:
         band_list = [b for b in band_list if b.genre.value.lower() == genre.value]
     if q:
-        band_list = [b for b in band_list if q.lower() in b.name.lower()]    
+        band_list = [b for b in band_list if q.lower() in b.name.lower()]
     return band_list
 
-@app.get('/bands/{band_id}')
+@app.get('/bands/{band_id}', response_model=BandRead)
 async def band(band_id: int,
-               session: Session = Depends(get_session)               
-               ) -> Band:   
-  band = session.get(Band, band_id)
-  if band is None: 
+               session: Session = Depends(get_session)
+               ):
+  band = session.exec(select(Band).where(Band.id == band_id).options(selectinload(Band.albums))).first()
+  if band is None:
     raise HTTPException(status_code = 404, detail = 'Band not found')
   return band
 

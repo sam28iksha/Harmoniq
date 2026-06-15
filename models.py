@@ -57,6 +57,18 @@ class Album(AlbumBase, table = True):
     id : int = Field(default=None, primary_key=True)
     band: Band = Relationship(back_populates="albums")
 
+
+class AlbumRead(SQLModel):
+    id: int
+    title: str
+    release_date: date
+    band_id: Optional[int] = None
+
+class BandRead(BandBase):
+    id: int
+    date: Optional[date] = None
+    albums: list[AlbumRead] = []
+
 class AuditLog(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     band_name: str

@@ -3,18 +3,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const bandsGrid = document.getElementById('bandsGrid');
     const totalBandsCount = document.getElementById('totalBandsCount');
     const searchInput = document.getElementById('searchInput');
-    
+
     // Modals
     const bandModal = document.getElementById('bandModal');
     const logsModal = document.getElementById('logsModal');
-    
+
     // Buttons
     const addBandBtn = document.getElementById('addBandBtn');
     const viewLogsBtn = document.getElementById('viewLogsBtn');
     const rockViewBtn = document.getElementById('rockViewBtn');
     const metalViewBtn = document.getElementById('metalViewBtn');
     const allViewBtn = document.getElementById('allViewBtn');
-    
+
     // Stored Procedure elements
     const callProcBtn = document.getElementById('callProcBtn');
     const procGenreSelect = document.getElementById('procGenreSelect');
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const transferResult = document.getElementById('transferResult');
 
     const closeModalBtns = document.querySelectorAll('.close-modal, .close-logs-modal');
-    
+
     // Forms
     const bandForm = document.getElementById('bandForm');
     const albumSection = document.getElementById('albumSection');
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
     addBandBtn.addEventListener('click', () => openModal('add'));
     viewLogsBtn.addEventListener('click', openLogsModal);
     searchInput.addEventListener('input', (e) => fetchBands(e.target.value));
-    
+
     rockViewBtn.addEventListener('click', () => fetchView('rock'));
     metalViewBtn.addEventListener('click', () => fetchView('metal'));
     allViewBtn.addEventListener('click', () => {
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.length === 0) {
                 procResult.innerHTML = '<em>No bands found for this genre.</em>';
             } else {
-                procResult.innerHTML = data.map(b => 
+                procResult.innerHTML = data.map(b =>
                     `<div class="proc-item">🎸 <b>${b.band_name}</b> (${b.band_genre}) — ${b.album_count} album(s)</div>`
                 ).join('');
             }
@@ -147,8 +147,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (genreLower === 'metal') themeClass = 'theme-metal';
             if (genreLower === 'hip-hop') themeClass = 'theme-hip-hop';
 
-            const albumsText = isView ? '' : `<p class="albums-info">Albums: ${band.albums ? band.albums.length : 0}</p>`;
-            
+            let albumsText = '';
+            if (!isView && band.albums && band.albums.length > 0) {
+                const albumNames = band.albums.map(a => a.title).join(', ');
+                albumsText = `<p class="albums-info">Albums: ${band.albums.length} — ${albumNames}</p>`;
+            } else if (!isView) {
+                albumsText = `<p class="albums-info">Albums: 0</p>`;
+            }
+
             // Format number as 01, 02
             const numLabel = counter.toString().padStart(2, '0');
 
@@ -212,11 +218,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function handleBandSubmit(e) {
         e.preventDefault();
-        
+
         const id = document.getElementById('bandId').value;
         const name = document.getElementById('bandName').value;
         const genre = document.getElementById('bandGenre').value;
-        
+
         if (id) {
             // Update
             try {
@@ -265,8 +271,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const logs = await response.json();
             const tbody = document.getElementById('logsTableBody');
             tbody.innerHTML = '';
-            
-            if(logs.length === 0){
+
+            if (logs.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="4">No logs available. Try adding or deleting a band!</td></tr>';
             } else {
                 logs.forEach(log => {
